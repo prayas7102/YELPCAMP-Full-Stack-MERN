@@ -1,0 +1,13 @@
+<%- include('../partials/navbar')%>
+
+<div class="container">
+
+<h1>All components</h1>
+<h1><%=campgrounds.title%></h1>
+<h1><%=campgrounds.location%></h1>
+<p><form action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
+	<button>DELETE</button>
+</form></p>
+	<a href="/campgrounds/<%=campgrounds._id%>/edit">edit</a>
+	<a href="/campgrounds">All campgrounds</a>
+</div>

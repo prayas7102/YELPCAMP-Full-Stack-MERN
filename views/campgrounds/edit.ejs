@@ -1,0 +1,18 @@
+<%- include('../partials/navbar')%>
+
+<div class="container">
+
+<h1>UPDATE</h1>
+<form action="/campgrounds/<%=campgrounds._id%>?_method=PUT" method="POST">
+	<div>
+	<label for="title">Title</label>
+	<input type="text" id="title" value="<%=campgrounds.title%>" name="campground[title]">
+</div>
+<div>
+	<label for="location">Location</label>
+	<input type="text" id="location" value="<%=campgrounds.location%>" name="campground[location]">
+</div>
+<button>update</button>
+</form>
+<p><a href="/campgrounds/<%=campgrounds._id%>">Back to campground</a></p>
+</div>

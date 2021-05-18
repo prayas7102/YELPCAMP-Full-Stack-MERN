@@ -1,0 +1,11 @@
+<%- include('../partials/navbar')%>
+<ul>
+	<%for(var c of campgrounds){%>
+	<li><a href="/campgrounds/<%=c._id%>"><%= c.title %></a></li>
+	<%}%>
+</ul>
+<footer class="footer bg-dark py-3 mt-auto">
+	<div class="container">
+		<span class="text-muted">YelpCamp 2020</span>
+	</div>
+</footer>
