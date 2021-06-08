@@ -1,13 +1,26 @@
 <%- include('../partials/navbar')%>
+<%- include('../partials/navbar')%>
+<div class="row">
+	<div class="col-6 offset-3">
+		<div class="card" style="width: 18rem;">
+			<img src=<%=campgrounds.image%> height="400px" width="400px" class="card-img-top" alt="...">
+			<div class="card-body">
+			  <h5 class="card-title"><%=campgrounds.title%></h5>
+			  <p class="card-text"><%=campgrounds.location%></p>
+			</div>
+			<ul class="list-group list-group-flush">
+			  <li class="list-group-item"><%=campgrounds.description%></li>
+			  <li class="list-group-item"><%=campgrounds.price%></li>
+			</ul>
+			<div class="card-body">
+			  <a href="/campgrounds/<%=campgrounds._id%>/edit" class="card-link btn btn-warning">EDIT</a>
+			  <a href="/campgrounds" class="card-link btn btn-info">All campgrounds</a>
+			  <form class="d-inline btn btn-danger" action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
+				<button  class="d-inline btn btn-danger">DELETE</button>
+			</form>
+			</div>
+		  </div>		
 
-<div class="container">
-
-<h1>All components</h1>
-<h1><%=campgrounds.title%></h1>
-<h1><%=campgrounds.location%></h1>
-<p><form action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
-	<button>DELETE</button>
-</form></p>
-	<a href="/campgrounds/<%=campgrounds._id%>/edit">edit</a>
-	<a href="/campgrounds">All campgrounds</a>
+	</div>
 </div>
+<%- include('../partials/footer')%>

@@ -51,21 +51,21 @@ app.get('/campgrounds/:id/edit', async(req,res)=>{
 });
 app.get('/campgrounds', async(req,res)=>{
 	const campgrounds= await campground.find({});
-	//console.log(campgrounds)
+	//console.log(campgrounds);
 	res.render('campgrounds/app',{campgrounds});
 } )
 app.put('/campgrounds/:id', async(req,res)=>{
 	const {id}=req.params;
-	console.log(req.body.campground.title);
-	const campgrounds=await campground.findByIdAndUpdate(id,{...req.body.campground});
+	const campgrounds=await campground.findByIdAndUpdate(id,{...req.body.campgrounds});
+	console.log(req.body);
 	res.redirect('/campgrounds/'+campgrounds._id);
 });
 app.delete('/campgrounds/:id',async(req,res)=>{
-	console.log('h');
+	//console.log('h');
 	const{id}=req.params;
 	await campground.findByIdAndDelete(id);
 	res.redirect('/campgrounds');
 });
-app.listen(8000,()=>{
+app.listen(3000,()=>{
 	console.log('serving on port 3000')
 })

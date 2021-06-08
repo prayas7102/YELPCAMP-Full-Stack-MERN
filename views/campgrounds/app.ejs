@@ -1,11 +1,23 @@
 <%- include('../partials/navbar')%>
 <ul>
 	<%for(var c of campgrounds){%>
-	<li><a href="/campgrounds/<%=c._id%>"><%= c.title %></a></li>
-	<%}%>
+		<div class="card" mb-3>
+		<div class="row">
+			<div class="col-md-4">
+				<img class="img-fluid" src="<%=c.image%>">
+			</div>
+		<div class="col-md-8">
+		<div class="card-body">
+			<h5 class="card-title"><%= c.title%></h5>
+			<p class="card-text"><%=c.description%></p>
+			<p class="card-text">
+				<small class="text-muted"><%=c.location%></small>
+			</p>
+			<a class="btn btn-primary" href="/campgrounds/<%=c._id%>">VIEW  <%=c.title%></a>
+		</div>
+		</div>
+		</div>
+		</div>
+		<%}%>
 </ul>
-<footer class="footer bg-dark py-3 mt-auto">
-	<div class="container">
-		<span class="text-muted">YelpCamp 2020</span>
-	</div>
-</footer>
+<%- include('../partials/footer')%>

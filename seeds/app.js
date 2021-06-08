@@ -27,9 +27,12 @@ const seed= async()=>{
 		const r=Math.floor(Math.random()*1000);
 		const camp = new campground({
 			title: sample(descriptors) + sample(places),
-			location: cities.cities[r].city+ " "+ cities.cities[r].state
+			location: cities.cities[r].city+ " "+ cities.cities[r].state,
+			image:'https://source.unsplash.com/collection/xvYOajceQCI/600x600',
+			description: 'lora',
+			price:100
 		})
-	//console.log(sample(descriptors) + sample(places));
+	console.log(camp.location);
 //	console.log((cities.cities[r].city+cities.cities[r].state));
 	await camp.save()
 }}
