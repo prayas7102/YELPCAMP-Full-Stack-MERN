@@ -32,7 +32,7 @@ const seed= async()=>{
 			description: 'lora',
 			price:100
 		})
-	console.log(camp.location);
+	//console.log(camp.location);
 //	console.log((cities.cities[r].city+cities.cities[r].state));
 	await camp.save()
 }}

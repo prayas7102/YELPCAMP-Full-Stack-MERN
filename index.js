@@ -10,13 +10,6 @@ mongoose.connect('mongodb://localhost:27017/yelp-camp',{
 	useCreateIndex: true,
 	useUnifiedTopology: true
 });
-/*const db="mongodb+srv://mongoprayas:mongoprayas7@@prayascluster.xeyfs.mongodb.net/yelp-camp?retryWrites=true&w=majority";
-mongoose.connect(db,{
-	useNewUrlParser: true,
-	useCreateIndex: true,
-	useUnifiedTopology: true
-});*/
-//const db=mongoose.connection;
 app.engine('ejs',ejsmate)
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
@@ -24,7 +17,7 @@ app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
 app.get('/',(req,res)=>{
 	res.render('home.ejs')
-})
+});
 app.get('/makecampground',async (req,res)=>{
 	const camp = new  campground({title:'vhjvgfdhjsbfvs', location:'nbvxgdn'});
 	await camp.save();
@@ -62,7 +55,7 @@ app.put('/campgrounds/:id', async(req,res)=>{
 });
 app.delete('/campgrounds/:id',async(req,res)=>{
 	//console.log('h');
-	const{id}=req.params;
+	const {id}=req.params;
 	await campground.findByIdAndDelete(id);
 	res.redirect('/campgrounds');
 });

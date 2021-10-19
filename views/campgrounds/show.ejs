@@ -1,9 +1,8 @@
 <%- include('../partials/navbar')%>
-<%- include('../partials/navbar')%>
-<div class="row">
-	<div class="col-6 offset-3">
-		<div class="card" style="width: 18rem;">
-			<img src=<%=campgrounds.image%> height="400px" width="400px" class="card-img-top" alt="...">
+<div class="row mt-5" style="margin-right: 180px;">
+	<div class="col-6 offset-3" >
+		<div class="card" style="width: 40rem;">
+			<img src="<%=campgrounds.image%>" height="400px" width="700px" class="card-img-top" alt="...">
 			<div class="card-body">
 			  <h5 class="card-title"><%=campgrounds.title%></h5>
 			  <p class="card-text"><%=campgrounds.location%></p>
@@ -15,7 +14,7 @@
 			<div class="card-body">
 			  <a href="/campgrounds/<%=campgrounds._id%>/edit" class="card-link btn btn-warning">EDIT</a>
 			  <a href="/campgrounds" class="card-link btn btn-info">All campgrounds</a>
-			  <form class="d-inline btn btn-danger" action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
+			  <form class="d-inline" action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
 				<button  class="d-inline btn btn-danger">DELETE</button>
 			</form>
 			</div>
