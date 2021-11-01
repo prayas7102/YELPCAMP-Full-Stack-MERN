@@ -1,0 +1,11 @@
+<%- include('./partials/navbar')%>
+<div class="row">
+    <div class="col-6 offset-3">
+    <div class="alert alert-danger" role="alert">
+        <h1>Error</h1>
+        <p><%=err.message%></p>
+        <p><%=err.statuscode%></p>
+      </div>
+      </div>
+</div>
+<%- include('./partials/footer')%>
