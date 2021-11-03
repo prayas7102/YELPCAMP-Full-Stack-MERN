@@ -18,8 +18,15 @@
 				<button  class="d-inline btn btn-danger">DELETE</button>
 			</form>
 			</div>
-		  </div>		
-
+			<form method="POST" action="/campgrounds/<%=campgrounds._id%>/review">
+				<label for="rating" class="form-label">LEAVE A REVIEW</label>
+				<input type="range" min="1" max="5" name="review[star]" class="form-range" id="customRange1" >
+				<div class="form-floating">
+					<textarea class="form-control" id="floatingTextarea" placeholder="Leave a comment here" name="review[body]" style="height: 100px;width: 100%;"></textarea>
+				  </div>
+				  <button class="btn btn-success">SUBMIT</button>
+			  </form>
+		  </div>
 	</div>
 </div>
 <%- include('../partials/footer')%>
