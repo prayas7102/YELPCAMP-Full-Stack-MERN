@@ -9,3 +9,11 @@ const validator = Joi.object({
     }).required()
 });
 module.exports=validator;
+/*
+const reviewvalidator = Joi.object({
+    Review: Joi.object({
+        body: Joi.string().required(),
+        star: Joi.number().required().min(1),
+    }).required()
+});
+module.exports=reviewvalidator;*/
