@@ -6,6 +6,7 @@ const catchAsync=require('./util/catchAsync');
 const AppError=require('./util/AppError');
 const mongoose=require('mongoose');
 const session= require('express-session');
+const flash=require('connect-flash');
 const campground=require('./models/campground');
 const camproute=require('./routes/campground');
 const revroute=require('./routes/review');
@@ -24,8 +25,6 @@ app.get('/',(req,res)=>{
 	res.render('home.ejs')
 });
 
-app.use('/campgrounds',camproute);
-app.use('/review',revroute);
 const sessionconfig={
 	secret: 'bibichod',
 	resave: false,
@@ -37,6 +36,15 @@ const sessionconfig={
 	}
 };
 app.use(session(sessionconfig));
+app.use(flash());
+app.use((req,res,next)=>{
+	res.locals.success=req.flash('success');
+    res.locals.error=req.flash('error');
+	next();
+});
+
+app.use('/campgrounds',camproute);
+app.use('/review',revroute);
 app.get('/makecampground', catchAsync(async (req,res)=>{
 	const camp = new  campground({title:'vhjvgfdhjsbfvs', location:'nbvxgdn'});
 	await camp.save();
@@ -49,6 +57,7 @@ app.use((err,req,res,next)=>{
 	const {statuscode=500,message="something went wrong"}=err;
 	//console.log(err);
 	res.status(statuscode).render('error',{err});
+	next();
 });
 app.listen(3000,()=>{
 	console.log('serving on port 3000')

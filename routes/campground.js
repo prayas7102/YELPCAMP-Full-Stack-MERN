@@ -1,11 +1,9 @@
 const express = require('express');
-const app=express();
 const catchAsync=require('../util/catchAsync');
 const AppError=require('../util/AppError');
 const campground=require('../models/campground');
 const Review=require('../models/review');
 const router=express.Router();
-const path=require('path');
 const joischema =require('../joischema');
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
@@ -16,10 +14,6 @@ const validatecamp =(req,res,next)=>{
 		next();
 	}
 }
-const methodOverride=require('method-override');
-app.use(methodOverride('_method'));
-app.set('view engine','ejs');
-app.set('views',path.join(__dirname,'views'));
 router.get('/', catchAsync(async(req,res)=>{
 	const campgrounds= await campground.find({});
 	//console.log(campgrounds);
@@ -31,33 +25,64 @@ router.get('/new',(req,res)=>{
 router.post('/',validatecamp, catchAsync(async(req,res)=>{
 	//if(!req.body.campground) throw new AppError('invalid campground',400);
 	const campgrounds= new campground(req.body.campground);
-	await campgrounds.save();
+	if(!campgrounds){
+		req.error('error','Successfuly DID NOT made a new Campground');
+	}else{
+		req.flash('success','Successfuly made a new Campground');
+		await campgrounds.save();
+	}	
 	res.redirect('/campgrounds/'+campgrounds._id);
 }));
 
 router.get('/:id', catchAsync(async(req,res)=>{
-	const campgrounds = await campground.findById(req.params.id).populate('reviews');
-	//console.log(campgrounds);
-	res.render('campgrounds/show',{campgrounds});
+	const campgrounds = await campground.findById(req.params.id).populate('reviews')
+	.then((campgrounds)=>{
+		req.flash('success','Successfuly found Campground');
+		res.render('campgrounds/show',{campgrounds});
+	})
+	.catch((a)=>{
+		//console.log(a);
+		req.flash('error','DID NOT found Campground');
+		res.redirect('/campgrounds');
+	})
+	
 }));
 router.get('/:id/edit', catchAsync(async(req,res)=>{
-	const campgrounds = await campground.findById(req.params.id);
-	//console.log(req.params);
-	res.render('campgrounds/edit',{campgrounds});
+	const campgrounds = await campground.findById(req.params.id)
+	.then((campgrounds)=>{
+		req.flash('success','EDIT the Campground');
+		res.render('campgrounds/edit',{campgrounds});
+	})
+	.catch((error)=>{
+		req.flash('error','Could NOT open the EDIT page!');
+		res.redirect('/campgrounds/'+req.params.id);
+	})
 }));
 
 router.put('/:id',validatecamp, catchAsync(async(req,res)=>{
 	const {id}=req.params;
-    console.log(id);
-	const campgrounds=await campground.findByIdAndUpdate(id,{...req.body.campgrounds});
-//	console.log(req.body);
-	res.redirect('/campgrounds/'+campgrounds._id);
+	const campgrounds=await campground.findByIdAndUpdate(id,{...req.body.campgrounds})
+	.then((campgrounds)=>{
+		req.flash('success','Successfuly EDITED the Campground');
+		res.redirect('/campgrounds/'+campgrounds._id);
+	})
+	.catch((error)=>{
+		req.flash('error','Could NOT EDIT the Campground!');
+		res.redirect('/campgrounds/'+req.params.id);
+	})
 }));
 router.delete('/:id', catchAsync(async(req,res)=>{
-	//console.log('h');
 	const {id}=req.params;
-	await campground.findByIdAndDelete(id);
-	res.redirect('/campgrounds');
+	await campground.findByIdAndDelete(id)
+	.then((campgrounds)=>{
+		req.flash('success','Successfuly DELETED the Campground');
+		res.redirect('/campgrounds');
+	})
+	.catch((error)=>{
+		req.flash('error','Could NOT DELETE the Campground!');
+		res.redirect('/campgrounds');
+	})
+	
 }));
 router.post('/:id/review',catchAsync(async(req,res)=>{
 	const camp = await campground.findById(req.params.id);
@@ -65,7 +90,14 @@ router.post('/:id/review',catchAsync(async(req,res)=>{
 	const review = new Review(req.body.review);
 	camp.reviews.push(review);
 	await review.save();
-	await camp.save();
-	res.redirect("/campgrounds/"+camp._id);
+	await camp.save().then((campgrounds)=>{
+		req.flash('success','Successfuly ADDED the Review');
+		res.redirect("/campgrounds/"+camp._id);
+	})
+	.catch((error)=>{
+		req.flash('error','Could NOT DELETE the Review!');
+		res.redirect("/campgrounds/"+camp._id);
+	})
+	
 }));
 module.exports=router;
