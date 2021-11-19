@@ -5,6 +5,7 @@ const campground=require('../models/campground');
 const Review=require('../models/review');
 const router=express.Router();
 const joischema =require('../joischema');
+const islogin = require('../loggedin');
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
 	//console.log(req.body,error)
@@ -19,7 +20,7 @@ router.get('/', catchAsync(async(req,res)=>{
 	//console.log(campgrounds);
 	res.render('campgrounds/app',{campgrounds});
 } ));
-router.get('/new',(req,res)=>{
+router.get('/new',islogin,(req,res)=>{
 	res.render('campgrounds/new');
 });
 router.post('/',validatecamp, catchAsync(async(req,res)=>{
@@ -34,7 +35,7 @@ router.post('/',validatecamp, catchAsync(async(req,res)=>{
 	res.redirect('/campgrounds/'+campgrounds._id);
 }));
 
-router.get('/:id', catchAsync(async(req,res)=>{
+router.get('/:id',islogin, catchAsync(async(req,res)=>{
 	const campgrounds = await campground.findById(req.params.id).populate('reviews')
 	.then((campgrounds)=>{
 		req.flash('success','Successfuly found Campground');
@@ -47,7 +48,7 @@ router.get('/:id', catchAsync(async(req,res)=>{
 	})
 	
 }));
-router.get('/:id/edit', catchAsync(async(req,res)=>{
+router.get('/:id/edit',islogin, catchAsync(async(req,res)=>{
 	const campgrounds = await campground.findById(req.params.id)
 	.then((campgrounds)=>{
 		req.flash('success','EDIT the Campground');
@@ -71,7 +72,7 @@ router.put('/:id',validatecamp, catchAsync(async(req,res)=>{
 		res.redirect('/campgrounds/'+req.params.id);
 	})
 }));
-router.delete('/:id', catchAsync(async(req,res)=>{
+router.delete('/:id' ,islogin, catchAsync(async(req,res)=>{
 	const {id}=req.params;
 	await campground.findByIdAndDelete(id)
 	.then((campgrounds)=>{

@@ -20,17 +20,33 @@ const validatecamp =(req,res,next)=>{
 router.get('/register',(req,res,next)=>{
 	res.render('register');
 });
+router.get('/login',(req,res,next)=>{
+	res.render('login');
+});
 router.post('/register',catchAsync(async(req,res,next)=>{
 	try{
 		const {username,password,email}=req.body.register;
 		const User=new user({email,username});
 		const registeruser=await user.register(User,password);
-		req.flash('success','Welcome to Yelp-Camp');
-		return res.redirect('/campgrounds');
+		req.login(registeruser,function(error){
+			if(error){return next(error)}
+			req.flash('success','Welcome to Yelp-Camp');
+			return res.redirect('/campgrounds');
+		});
 	}
 	catch(e){
 		req.flash('error',e.message)
 		return res.redirect('/register');
 	}
 }));
+
+router.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}),(req,res)=>{
+	req.flash('success','Logged in successfuly !!');
+	res.redirect('/campgrounds');
+});
+router.get('/logout',(req,res)=>{
+	req.logout();
+	req.flash('success','Successfully logged out');
+	res.redirect('/campgrounds');
+});
 module.exports=router;

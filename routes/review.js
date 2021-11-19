@@ -4,6 +4,7 @@ const AppError=require('../util/AppError');
 const campground=require('../models/campground');
 const Review=require('../models/review');
 const router=express.Router({mergeParams:true});
+const islogin=require('../loggedin');
 const joischema =require('../joischema');
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
@@ -14,7 +15,7 @@ const validatecamp =(req,res,next)=>{
 		next();
 	}
 }
-router.delete('/:id/camp/:id1', catchAsync(async(req,res)=>{
+router.delete('/:id/camp/:id1',islogin, catchAsync(async(req,res)=>{
 	//console.log(req.params);
 	const {id,id1}=req.params;
 	await Review.findByIdAndDelete(id)
