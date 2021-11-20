@@ -30,14 +30,17 @@ router.post('/',validatecamp, catchAsync(async(req,res)=>{
 		req.error('error','Successfuly DID NOT made a new Campground');
 	}else{
 		req.flash('success','Successfuly made a new Campground');
+		campgrounds.author=req.user._id;
 		await campgrounds.save();
 	}	
 	res.redirect('/campgrounds/'+campgrounds._id);
 }));
 
-router.get('/:id',islogin, catchAsync(async(req,res)=>{
-	const campgrounds = await campground.findById(req.params.id).populate('reviews')
+router.get('/:id', catchAsync(async(req,res)=>{
+	//console.log(req.params.id);
+	const campgrounds = await campground.findById(req.params.id).populate({path:'reviews',populate:{path:'person'}}).populate('author')
 	.then((campgrounds)=>{
+	//	console.log(campgrounds);
 		req.flash('success','Successfuly found Campground');
 		res.render('campgrounds/show',{campgrounds});
 	})
@@ -86,13 +89,16 @@ router.delete('/:id' ,islogin, catchAsync(async(req,res)=>{
 	
 }));
 router.post('/:id/review',catchAsync(async(req,res)=>{
-	const camp = await campground.findById(req.params.id);
-	//console.log(camp);
+	const camp = await campground.findById(req.params.id).populate({path:'reviews',populate:{path:'person'}}).populate('author');
+	console.log(camp)
 	const review = new Review(req.body.review);
+	review.person=req.user._id;
 	camp.reviews.push(review);
 	await review.save();
 	await camp.save().then((campgrounds)=>{
 		req.flash('success','Successfuly ADDED the Review');
+		// campgrounds.populate('reviews');
+		//console.log(campgrounds);
 		res.redirect("/campgrounds/"+camp._id);
 	})
 	.catch((error)=>{

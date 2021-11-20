@@ -12,18 +12,22 @@
 			</div>
 			<ul class="list-group list-group-flush">
 			  <li class="list-group-item"><%=campgrounds.description%></li>
+			  <li class="list-group-item"><%=campgrounds.author.username%></li>
 			  <li class="list-group-item"><%=campgrounds.price%></li>
 			</ul>
 			<div class="card-body">
-			  <a href="/campgrounds/<%=campgrounds._id%>/edit" class="card-link btn btn-warning">EDIT</a>
-			  <a href="/campgrounds" class="card-link btn btn-info">All campgrounds</a>
-			  <form class="d-inline" action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
-				<button  class="d-inline btn btn-danger">DELETE</button>
-			</form>
+			<% if(currentuser == campgrounds.author.username){ %>
+				<a href="/campgrounds/<%=campgrounds._id%>/edit" class="card-link btn btn-warning">EDIT</a>
+				<form class="d-inline" action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
+				  <button  class="d-inline btn btn-danger">DELETE</button>
+				</form>
+			<% } %>
+			<a href="/campgrounds" class="card-link btn btn-info">All campgrounds</a>
 			</div>
 		</div>
 	  </div>
 	</div>
+	<% if(currentuser){%>
 	<div class="col-sm-6" >
 	  <div class="card">
 		<div class="card-body">
@@ -45,16 +49,20 @@
 					</h5>
 					<h5 class="card-title">Reviews:</h5>
 					<p class="card-text"><%=r.body%></p>
-					<p></p>
+					<p class="card-text">Submitted by: <%= r.person.username  %></p>
+					<%if(r.person.equals(currentuser._id)){%>
 					<form class="d-inline" action="/review/<%=r._id%>/camp/<%=campgrounds._id%>?_method=DELETE" method="POST">
 						<button  class="d-inline btn btn-danger">DELETE</button>
 					</form>
+					<%}%>
 					</div>
 			  <%}%>
 			  </div>
 		</div>
 	  </div>
-	</div></div>
+	</div>
+	<%}%>
+</div>
 <%- include('../partials/footer')%>
 <script>
 	// Example starter JavaScript for disabling form submissions if there are invalid fields

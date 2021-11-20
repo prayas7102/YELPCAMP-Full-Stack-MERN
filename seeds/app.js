@@ -28,6 +28,7 @@ const seed= async()=>{
 		const camp = new campground({
 			title: sample(descriptors) + sample(places),
 			location: cities.cities[r].city+ " "+ cities.cities[r].state,
+			author: "6198a37897db2103806f264b",
 			image:'https://source.unsplash.com/collection/xvYOajceQCI/600x600',
 			description: 'lora',
 			price:100

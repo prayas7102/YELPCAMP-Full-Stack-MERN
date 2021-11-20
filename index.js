@@ -36,8 +36,8 @@ const sessionconfig={
 	saveUninitialized: true,
 	cookie:{
 		httpOnly: true,
-		expire: 100000000000,
-		maxAge: 1000000000000
+		expire: 1000000000000000000000000000000000,
+		maxAge: 1000000000000999999999999999999999
 	}
 };
 app.use(session(sessionconfig));
@@ -51,7 +51,7 @@ passport.serializeUser(user.serializeUser());
 passport.deserializeUser(user.deserializeUser());
 
 app.use((req,res,next)=>{
-	res.locals.current=req.user;
+	res.locals.currentuser=req.user;
 	res.locals.success=req.flash('success');
     res.locals.error=req.flash('error');
 	next();

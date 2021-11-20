@@ -42,7 +42,8 @@ router.post('/register',catchAsync(async(req,res,next)=>{
 
 router.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}),(req,res)=>{
 	req.flash('success','Logged in successfuly !!');
-	res.redirect('/campgrounds');
+	const redirect=req.session.returnto || '/campgrounds';
+	res.redirect(redirect);
 });
 router.get('/logout',(req,res)=>{
 	req.logout();
