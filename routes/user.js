@@ -17,13 +17,11 @@ const validatecamp =(req,res,next)=>{
 		next();
 	}
 }
-router.get('/register',(req,res,next)=>{
+router.route('/register')
+	.get((req,res,next)=>{
 	res.render('register');
-});
-router.get('/login',(req,res,next)=>{
-	res.render('login');
-});
-router.post('/register',catchAsync(async(req,res,next)=>{
+})
+	.post(catchAsync(async(req,res,next)=>{
 	try{
 		const {username,password,email}=req.body.register;
 		const User=new user({email,username});
@@ -39,8 +37,11 @@ router.post('/register',catchAsync(async(req,res,next)=>{
 		return res.redirect('/register');
 	}
 }));
-
-router.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}),(req,res)=>{
+router.route('/login')
+	.get((req,res,next)=>{
+	res.render('login');
+})
+	.post(passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}),(req,res)=>{
 	req.flash('success','Logged in successfuly !!');
 	const redirect=req.session.returnto || '/campgrounds';
 	res.redirect(redirect);

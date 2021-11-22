@@ -15,15 +15,13 @@ const validatecamp =(req,res,next)=>{
 		next();
 	}
 }
-router.get('/', catchAsync(async(req,res)=>{
+router.route('/')
+.get(catchAsync(async(req,res)=>{
 	const campgrounds= await campground.find({});
 	//console.log(campgrounds);
 	res.render('campgrounds/app',{campgrounds});
-} ));
-router.get('/new',islogin,(req,res)=>{
-	res.render('campgrounds/new');
-});
-router.post('/',validatecamp, catchAsync(async(req,res)=>{
+} ))
+.post(validatecamp, catchAsync(async(req,res)=>{
 	//if(!req.body.campground) throw new AppError('invalid campground',400);
 	const campgrounds= new campground(req.body.campground);
 	if(!campgrounds){
@@ -36,7 +34,23 @@ router.post('/',validatecamp, catchAsync(async(req,res)=>{
 	res.redirect('/campgrounds/'+campgrounds._id);
 }));
 
-router.get('/:id', catchAsync(async(req,res)=>{
+router.get('/new',islogin,(req,res)=>{
+	res.render('campgrounds/new');
+});
+
+router.get('/:id/edit',islogin, catchAsync(async(req,res)=>{
+	const campgrounds = await campground.findById(req.params.id)
+	.then((campgrounds)=>{
+		req.flash('success','EDIT the Campground');
+		res.render('campgrounds/edit',{campgrounds});
+	})
+	.catch((error)=>{
+		req.flash('error','Could NOT open the EDIT page!');
+		res.redirect('/campgrounds/'+req.params.id);
+	})
+}));
+router.route('/:id')
+	.get( catchAsync(async(req,res)=>{
 	//console.log(req.params.id);
 	const campgrounds = await campground.findById(req.params.id).populate({path:'reviews',populate:{path:'person'}}).populate('author')
 	.then((campgrounds)=>{
@@ -50,20 +64,8 @@ router.get('/:id', catchAsync(async(req,res)=>{
 		res.redirect('/campgrounds');
 	})
 	
-}));
-router.get('/:id/edit',islogin, catchAsync(async(req,res)=>{
-	const campgrounds = await campground.findById(req.params.id)
-	.then((campgrounds)=>{
-		req.flash('success','EDIT the Campground');
-		res.render('campgrounds/edit',{campgrounds});
-	})
-	.catch((error)=>{
-		req.flash('error','Could NOT open the EDIT page!');
-		res.redirect('/campgrounds/'+req.params.id);
-	})
-}));
-
-router.put('/:id',validatecamp, catchAsync(async(req,res)=>{
+}))
+	.put(validatecamp, catchAsync(async(req,res)=>{
 	const {id}=req.params;
 	const campgrounds=await campground.findByIdAndUpdate(id,{...req.body.campgrounds})
 	.then((campgrounds)=>{
@@ -74,8 +76,8 @@ router.put('/:id',validatecamp, catchAsync(async(req,res)=>{
 		req.flash('error','Could NOT EDIT the Campground!');
 		res.redirect('/campgrounds/'+req.params.id);
 	})
-}));
-router.delete('/:id' ,islogin, catchAsync(async(req,res)=>{
+}))
+	.delete(islogin, catchAsync(async(req,res)=>{
 	const {id}=req.params;
 	await campground.findByIdAndDelete(id)
 	.then((campgrounds)=>{
@@ -87,7 +89,7 @@ router.delete('/:id' ,islogin, catchAsync(async(req,res)=>{
 		res.redirect('/campgrounds');
 	})
 	
-}));
+}))
 router.post('/:id/review',catchAsync(async(req,res)=>{
 	const camp = await campground.findById(req.params.id).populate({path:'reviews',populate:{path:'person'}}).populate('author');
 	console.log(camp)

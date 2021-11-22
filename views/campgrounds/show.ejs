@@ -1,5 +1,6 @@
 <%- include('../partials/navbar')%>
 <%- include('../partials/flash') %>
+
 <div class="row" style="margin-bottom: 100px;" >
 	
 	<div class="col-sm-6">
@@ -16,7 +17,7 @@
 			  <li class="list-group-item"><%=campgrounds.price%></li>
 			</ul>
 			<div class="card-body">
-			<% if(currentuser == campgrounds.author.username){ %>
+			<% if(currentuser._id.equals(campgrounds.author._id)){ %>
 				<a href="/campgrounds/<%=campgrounds._id%>/edit" class="card-link btn btn-warning">EDIT</a>
 				<form class="d-inline" action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
 				  <button  class="d-inline btn btn-danger">DELETE</button>
@@ -33,7 +34,21 @@
 		<div class="card-body">
 			<form method="POST" action="/campgrounds/<%=campgrounds._id%>/review" class="validated-form" novalidate>
 				<label for="rating" class="form-label">LEAVE A REVIEW</label>
-				<input type="range" min="1" max="5" name="review[star]" class="form-range" id="customRange1" required>
+				<fieldset class="starability-basic">
+					<input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+					<input type="radio" id="first-rate1" name="rating" value="1" />
+					<label for="first-rate1" title="Terrible">1 star</label>
+					<input type="radio" id="first-rate2" name="rating" value="2" />
+					<label for="first-rate2" title="Not good">2 stars</label>
+					<input type="radio" id="first-rate3" name="rating" value="3" />
+					<label for="first-rate3" title="Average">3 stars</label>
+					<input type="radio" id="first-rate4" name="rating" value="4" />
+					<label for="first-rate4" title="Very good">4 stars</label>
+					<input type="radio" id="first-rate5" name="rating" value="5" />
+					<label for="first-rate5" title="Amazing">5 stars</label>
+				  </fieldset>
+				  
+				<!-- <input type="range" min="1" max="5" name="review[star]" class="form-range" id="customRange1" required> -->
 				<div class="form-floating">
 					<textarea class="form-control" id="floatingTextarea" placeholder="Leave a comment here" name="review[body]" style="height: 100px;width: 100%;" required></textarea>
 					<div style="margin: 1em;"><button class="btn btn-success">SUBMIT</button>
@@ -46,7 +61,12 @@
 				<div class="card-body">
 					<h5 class="card-title" style="display: inline;">Ratings: 
 						<h5 class="card-subtitle mb-2 text-muted" style="display: inline;"><%=r.star %></h5>
-					</h5>
+						<% for(var i=0;i<r.star;i++)	{%>
+							<span class="fa fa-star checked"></span>
+						<%}%>
+						<% for(var i=0;i<5-r.star;i++)	{%>
+							<span class="fa fa-star "></span>
+						<%}%>
 					<h5 class="card-title">Reviews:</h5>
 					<p class="card-text"><%=r.body%></p>
 					<p class="card-text">Submitted by: <%= r.person.username  %></p>
