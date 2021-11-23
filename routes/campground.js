@@ -6,6 +6,9 @@ const Review=require('../models/review');
 const router=express.Router();
 const joischema =require('../joischema');
 const islogin = require('../loggedin');
+const multer=require('multer');
+const {storage}=require('../cloudinary/cloud');
+const upload=multer({storage});
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
 	//console.log(req.body,error)
@@ -21,18 +24,21 @@ router.route('/')
 	//console.log(campgrounds);
 	res.render('campgrounds/app',{campgrounds});
 } ))
-.post(validatecamp, catchAsync(async(req,res)=>{
-	//if(!req.body.campground) throw new AppError('invalid campground',400);
-	const campgrounds= new campground(req.body.campground);
-	if(!campgrounds){
-		req.error('error','Successfuly DID NOT made a new Campground');
-	}else{
-		req.flash('success','Successfuly made a new Campground');
-		campgrounds.author=req.user._id;
-		await campgrounds.save();
-	}	
-	res.redirect('/campgrounds/'+campgrounds._id);
-}));
+.post(upload.single('image'), function (req, res, next) {
+	res.send(req.file);
+  });
+// .post(validatecamp, catchAsync(async(req,res)=>{
+// 	//if(!req.body.campground) throw new AppError('invalid campground',400);
+// 	const campgrounds= new campground(req.body.campground);
+// 	if(!campgrounds){
+// 		req.error('error','Successfuly DID NOT made a new Campground');
+// 	}else{
+// 		req.flash('success','Successfuly made a new Campground');
+// 		campgrounds.author=req.user._id;
+// 		await campgrounds.save();
+// 	}	
+// 	res.redirect('/campgrounds/'+campgrounds._id);
+// }));
 
 router.get('/new',islogin,(req,res)=>{
 	res.render('campgrounds/new');
