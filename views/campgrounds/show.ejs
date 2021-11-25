@@ -6,7 +6,38 @@
 	<div class="col-sm-6">
 	  <div class="card">
 		<div class="card-body">
-			<img src="<%=campgrounds.image%>" height="400px" width="700px" class="card-img-top" alt="...">
+
+			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+				<div class="carousel-indicators">
+				  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+				  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+				  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+				</div>
+				<div class="carousel-inner">
+				  <div class="carousel-item active">
+					<img src="<%=campgrounds.image[0].url%>" class="d-block w-100" alt="...">
+				  </div>
+				  <%for(var i=1;i<campgrounds.image.length;i++){%>
+					<div class="carousel-item">
+						<img src="<%=campgrounds.image[i].url%>" class="d-block w-100" alt="...">
+					</div>
+				<%}%>
+				</div>
+				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+				  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				  <span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+				  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+				  <span class="visually-hidden">Next</span>
+				</button>
+			  </div>
+
+
+<!-- 
+			<% for(img of campgrounds.image){%>
+				<img src="<%=img.url%>" height="400px" width="700px" class="card-img-top" alt="...">
+			<%}%> -->
 			<div class="card-body">
 			  <h5 class="card-title"><%=campgrounds.title%></h5>
 			  <p class="card-text"><%=campgrounds.location%></p>
@@ -17,7 +48,7 @@
 			  <li class="list-group-item"><%=campgrounds.price%></li>
 			</ul>
 			<div class="card-body">
-			<% if(currentuser._id.equals(campgrounds.author._id)){ %>
+			<% if(currentuser && currentuser._id.equals(campgrounds.author._id)){ %>
 				<a href="/campgrounds/<%=campgrounds._id%>/edit" class="card-link btn btn-warning">EDIT</a>
 				<form class="d-inline" action="/campgrounds/<%=campgrounds._id%>?_method=DELETE" method="POST">
 				  <button  class="d-inline btn btn-danger">DELETE</button>
@@ -64,7 +95,7 @@
 					<h5 class="card-title">Reviews:</h5>
 					<p class="card-text"><%=r.body%></p>
 					<p class="card-text">Submitted by: <%= r.person.username  %></p>
-					<%if(r.person.equals(currentuser._id)){%>
+					<%if(currentuser && r.person.equals(currentuser._id)){%>
 					<form class="d-inline" action="/review/<%=r._id%>/camp/<%=campgrounds._id%>?_method=DELETE" method="POST">
 						<button  class="d-inline btn btn-danger">DELETE</button>
 					</form>

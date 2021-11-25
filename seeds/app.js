@@ -29,7 +29,11 @@ const seed= async()=>{
 			title: sample(descriptors) + sample(places),
 			location: cities.cities[r].city+ " "+ cities.cities[r].state,
 			author: "6198a37897db2103806f264b",
-			image:'https://source.unsplash.com/collection/xvYOajceQCI/600x600',
+			image:[
+				{url:'https://res.cloudinary.com/dspuaavtt/image/upload/v1637733543/kxwizvxyvhx5zxinp75m.jpg',filename:'kxwizvxyvhx5zxinp75m'},
+				{url:'https://res.cloudinary.com/dspuaavtt/image/upload/v1637733542/yljxe2rkfsp29tuyo5kl.jpg',filename:'yljxe2rkfsp29tuyo5kl'},
+				{url:'https://res.cloudinary.com/dspuaavtt/image/upload/v1637733541/reappghs6lilegraoyn4.jpg',filename:'reappghs6lilegraoyn4'}
+			],
 			description: 'lora',
 			price:100
 		})

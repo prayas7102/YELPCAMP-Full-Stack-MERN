@@ -7,7 +7,7 @@ const router=express.Router();
 const joischema =require('../joischema');
 const islogin = require('../loggedin');
 const multer=require('multer');
-const {storage}=require('../cloudinary/cloud');
+const {cloudinary,storage}=require('../cloudinary/cloud');
 const upload=multer({storage});
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
@@ -21,23 +21,26 @@ const validatecamp =(req,res,next)=>{
 router.route('/')
 .get(catchAsync(async(req,res)=>{
 	const campgrounds= await campground.find({});
-	//console.log(campgrounds);
+	// console.log(campgrounds);
 	res.render('campgrounds/app',{campgrounds});
 } ))
-.post(upload.single('image'), function (req, res, next) {
-	res.send(req.file);
-  });
+.post(upload.array('image'),validatecamp,catchAsync(async(req,res)=>{
+	const campgrounds= new campground(req.body.campground);
+	campgrounds.image=req.files.map(f=>({url:f.path,filename:f.filename}));
+	// campgrounds.image.url=req.files.path;
+	// campgrounds.image.filename=req.files.filename;
+	// console.log(req.files);
+	// console.log(campgrounds.image.url);
+	if(!campgrounds){
+		req.error('error','Successfuly DID NOT made a new Campground');
+	}else{
+		req.flash('success','Successfuly made a new Campground');
+		campgrounds.author=req.user._id;
+		await campgrounds.save();
+	}	
+	res.redirect('/campgrounds/'+campgrounds._id);
+}));
 // .post(validatecamp, catchAsync(async(req,res)=>{
-// 	//if(!req.body.campground) throw new AppError('invalid campground',400);
-// 	const campgrounds= new campground(req.body.campground);
-// 	if(!campgrounds){
-// 		req.error('error','Successfuly DID NOT made a new Campground');
-// 	}else{
-// 		req.flash('success','Successfuly made a new Campground');
-// 		campgrounds.author=req.user._id;
-// 		await campgrounds.save();
-// 	}	
-// 	res.redirect('/campgrounds/'+campgrounds._id);
 // }));
 
 router.get('/new',islogin,(req,res)=>{
@@ -71,14 +74,26 @@ router.route('/:id')
 	})
 	
 }))
-	.put(validatecamp, catchAsync(async(req,res)=>{
+	.put(upload.array('image'),validatecamp, catchAsync(async(req,res)=>{
 	const {id}=req.params;
+	// console.log(req.body);
 	const campgrounds=await campground.findByIdAndUpdate(id,{...req.body.campgrounds})
-	.then((campgrounds)=>{
+	.then(async(campgrounds)=>{
+		req.files.map(f=>(campgrounds.image.push({url:f.path,filename:f.filename})));
+		await campgrounds.save();
+		if(req.body.delete){
+			for(let filename of req.body.delete){
+				 await cloudinary.uploader.destroy(filename);
+			}
+		   await campgrounds.updateOne({$pull:{image:{filename:{$in: req.body.delete}}}});
+		//    console.log(campgrounds,req.body.delete);
+		} 
+		await campgrounds.save();
 		req.flash('success','Successfuly EDITED the Campground');
 		res.redirect('/campgrounds/'+campgrounds._id);
 	})
 	.catch((error)=>{
+		console.log(error);
 		req.flash('error','Could NOT EDIT the Campground!');
 		res.redirect('/campgrounds/'+req.params.id);
 	})

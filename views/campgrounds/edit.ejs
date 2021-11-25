@@ -1,35 +1,36 @@
 <%- include('../partials/navbar')%>
 <div class="row mt-5">
-	<h1 class="text-center">New Campground</h1>
+	<h1 class="text-center">Edit Campground</h1>
 	<div class="col-6 offset-3">
-		<form action="/campgrounds/<%=campgrounds._id%>?_method=PUT" method="POST" class="validated-form" novalidate>
+		<form action="/campgrounds/<%=campgrounds._id%>?_method=PUT" method="POST" class="validated-form" enctype="multipart/form-data" novalidate>
 			<div class="mb-3">
 				<label class="form-label" for="title">Title</label>
-				<input class="form-control" type="text" id="title" name="campgrounds[title]" value="<%=campgrounds.title%>" required>
-				<div class="valid-feedback">
-					Looks good!
-				</div>
-			</div>
-			<div class="mb-3">
-				<label class="form-label" for="location">Location</label>
-				<input class="form-control" type="text" id="location" name="campgrounds[location]" value="<%=campgrounds.location%>" required>
-				<div class="valid-feedback">
-					Looks good!
-				</div>
-			</div>
-			<div class="mb-3">
-				<label class="form-label" for="image">Image Url</label>
-				<input class="form-control" type="text" id="image" name="campgrounds[image]" value="<%=campgrounds.image%>" required>
+				<input class="form-control" type="text" id="title" name="campground[title]" value="<%=campgrounds.title%>" required>
 				<div class="valid-feedback">
 					Looks good!
 				</div>
 			</div>
 			
 			<div class="mb-3">
+				<label class="form-label" for="location">Location</label>
+				<input class="form-control" type="text" id="location" name="campground[location]" value="<%=campgrounds.location%>" required>
+				<div class="valid-feedback">
+					Looks good!
+				</div>
+			</div>
+			<label class="form-label" for="location">Select Images To Delete</label>			
+			<div class="mb-3 flex" style="justify-content:space-between;">
+				<%campgrounds.image.forEach((img,i)=>{%>
+					<label><input type="checkbox" name="delete[]" id="image-<%=i%>" value="<%=img.filename%>">
+					<img src="<%=img.url%>" type="radio" alt=".." class="img-thumbnail"></label>
+				<%})%> 
+			</div>
+			<input type="file" name="image" multiple>
+			<div class="mb-3">
 			<label class="form-label" for="price">Campground Price</label>
 			<div class="input-group">
 				<span class="input-group-text" id="basic-addon1">$</span>
-				<input class="form-control" type="text" placeholder="0.0$" value="<%=campgrounds.price%>" name="campgrounds[price]" required>
+				<input class="form-control" type="text" placeholder="0.0$" value="<%=campgrounds.price%>" name="campground[price]" required>
 			</div>
 			<div class="valid-feedback">
 				Looks good!
@@ -38,7 +39,7 @@
 
 			<div class="mb-3">
 				<label class="form-label" for="description">Description</label>
-				<input class="form-control" type="text" id="description" name="campgrounds[description]" value="<%=campgrounds.description%>">
+				<input class="form-control" type="text" id="description" name="campground[description]" value="<%=campgrounds.description%>">
 			</div>
 			<div class="mb-3">
 				<button class="btn btn-info">Update</button>
