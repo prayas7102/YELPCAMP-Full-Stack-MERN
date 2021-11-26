@@ -7,6 +7,16 @@ const CampgroundSchema = new Schema({
 	image:[{
 		url:String,filename:String
 	}],
+	geometery:{
+		type:{
+			type:String,
+			enum:['Point'],
+			
+		},
+		coordinates:{
+			type:[Number],
+		}
+},
 	price:Number,
 	description: String,
 	location:String,

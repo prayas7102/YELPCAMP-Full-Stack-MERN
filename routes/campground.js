@@ -9,6 +9,9 @@ const islogin = require('../loggedin');
 const multer=require('multer');
 const {cloudinary,storage}=require('../cloudinary/cloud');
 const upload=multer({storage});
+const geocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapboxtoken=process.env.MAPBOX_TOKEN;
+const geocoder=geocoding({accessToken:mapboxtoken});
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
 	//console.log(req.body,error)
@@ -25,23 +28,23 @@ router.route('/')
 	res.render('campgrounds/app',{campgrounds});
 } ))
 .post(upload.array('image'),validatecamp,catchAsync(async(req,res)=>{
+	console.log(req.body.campground.location);
+	const geodata= await geocoder.forwardGeocode({
+		query:req.body.campground.location,limit:10
+	}).send();
+	// res.send(geodata.body.features[0].geometery.coordinates);
 	const campgrounds= new campground(req.body.campground);
 	campgrounds.image=req.files.map(f=>({url:f.path,filename:f.filename}));
-	// campgrounds.image.url=req.files.path;
-	// campgrounds.image.filename=req.files.filename;
-	// console.log(req.files);
-	// console.log(campgrounds.image.url);
 	if(!campgrounds){
-		req.error('error','Successfuly DID NOT made a new Campground');
+		req.error('error','Successfuly DID NOT made a new Campground');0
 	}else{
 		req.flash('success','Successfuly made a new Campground');
+		campgrounds.geometery=geodata.body.features[0].geometry;
 		campgrounds.author=req.user._id;
 		await campgrounds.save();
 	}	
 	res.redirect('/campgrounds/'+campgrounds._id);
 }));
-// .post(validatecamp, catchAsync(async(req,res)=>{
-// }));
 
 router.get('/new',islogin,(req,res)=>{
 	res.render('campgrounds/new');
@@ -63,12 +66,12 @@ router.route('/:id')
 	//console.log(req.params.id);
 	const campgrounds = await campground.findById(req.params.id).populate({path:'reviews',populate:{path:'person'}}).populate('author')
 	.then((campgrounds)=>{
-	//	console.log(campgrounds);
+	    // console.log(campgrounds.geometery.coordinates);
 		req.flash('success','Successfuly found Campground');
 		res.render('campgrounds/show',{campgrounds});
 	})
 	.catch((a)=>{
-		//console.log(a);
+		console.log(a);
 		req.flash('error','DID NOT found Campground');
 		res.redirect('/campgrounds');
 	})

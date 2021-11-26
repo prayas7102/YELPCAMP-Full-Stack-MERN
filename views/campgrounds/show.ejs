@@ -1,39 +1,32 @@
 <%- include('../partials/navbar')%>
 <%- include('../partials/flash') %>
-
+<div id="map" style="width: 50em; height:25em;"></div>
 <div class="row" style="margin-bottom: 100px;" >
-	
 	<div class="col-sm-6">
 	  <div class="card">
+		  
 		<div class="card-body">
-
-			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-				<div class="carousel-indicators">
-				  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-				  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-				  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-				</div>
-				<div class="carousel-inner">
-				  <div class="carousel-item active">
-					<img src="<%=campgrounds.image[0].url%>" class="d-block w-100" alt="...">
-				  </div>
-				  <%for(var i=1;i<campgrounds.image.length;i++){%>
-					<div class="carousel-item">
-						<img src="<%=campgrounds.image[i].url%>" class="d-block w-100" alt="...">
+			<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+				<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+					<div class="carousel-inner">
+						<div class="carousel-item active">
+							<img src="<%=campgrounds.image[0].url%>" class="d-block w-100" alt="...">
+						  </div>
+						  <%for(var i=1;i<campgrounds.image.length;i++){%>
+							<div class="carousel-item">
+								<img src="<%=campgrounds.image[i].url%>" class="d-block w-100" alt="...">
+							</div>
+	    					<%}%>
 					</div>
-				<%}%>
-				</div>
-				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-				  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				  <span class="visually-hidden">Previous</span>
-				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-				  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-				  <span class="visually-hidden">Next</span>
-				</button>
-			  </div>
-
-
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+					  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					  <span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+					  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+					  <span class="visually-hidden">Next</span>
+					</button>
+				  </div></div>
 <!-- 
 			<% for(img of campgrounds.image){%>
 				<img src="<%=img.url%>" height="400px" width="700px" class="card-img-top" alt="...">
@@ -130,4 +123,19 @@
       }, false)
     })
 })()
+</script>
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoicHJheWFza3VtYXIiLCJhIjoiY2t3ZzBoY2w0MGswMTJwcG1paWFqdWRzcSJ9.__eZ6h0eFMNHrqIPy44GZQ';
+	var c= '[<%=(campgrounds.geometery.coordinates)%>]';
+	console.log(typeof(c));
+	const map = new mapboxgl.Map({
+container: 'map', // container ID
+style: 'mapbox://styles/mapbox/streets-v11', // style URL
+center: JSON.parse(c), // starting position [lng, lat]
+zoom: 9 // starting zoom
+});
+const marker1 = new mapboxgl.Marker()
+.setLngLat(JSON.parse(c))
+.addTo(map);
+
 </script>
