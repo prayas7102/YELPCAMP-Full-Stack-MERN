@@ -1,6 +1,5 @@
 <%- include('../partials/navbar')%>
 <%- include('../partials/flash') %>
-<div id="map" style="width: 50em; height:25em;"></div>
 <div class="row" style="margin-bottom: 100px;" >
 	<div class="col-sm-6">
 	  <div class="card">
@@ -54,6 +53,8 @@
 	</div>
 	<% if(currentuser){%>
 	<div class="col-sm-6" >
+		<div id="map" style="width: 45em; height:25em;margin-bottom: 20px;"></div>
+
 	  <div class="card">
 		<div class="card-body">
 			<form method="POST" action="/campgrounds/<%=campgrounds._id%>/review" class="validated-form" novalidate>
@@ -129,13 +130,26 @@
 	var c= '[<%=(campgrounds.geometery.coordinates)%>]';
 	console.log(typeof(c));
 	const map = new mapboxgl.Map({
-container: 'map', // container ID
-style: 'mapbox://styles/mapbox/streets-v11', // style URL
-center: JSON.parse(c), // starting position [lng, lat]
-zoom: 9 // starting zoom
+		container: 'map', // container ID
+		style: 'mapbox://styles/mapbox/streets-v11', // style URL
+		center: JSON.parse(c), // starting position [lng, lat]
+		zoom: 9 // starting zoom
+	});
+	const marker1 = new mapboxgl.Marker()
+		.setLngLat(JSON.parse(c))
+		.addTo(map);
+	const popup = new mapboxgl.Popup({ closeOnClick: false })
+		.setLngLat(JSON.parse(c))
+		.setHTML('<h1><%=campgrounds.location%></h1>')
+		.addTo(map);	
+		map.addLayer({
+  id: 'earthquakes-viz',
+  type: 'circle',
+  source: 'earthquakes',
+  paint: {
+    'circle-stroke-color': '#000',
+    'circle-stroke-width': 1,
+    'circle-color': '#000'
+  }
 });
-const marker1 = new mapboxgl.Marker()
-.setLngLat(JSON.parse(c))
-.addTo(map);
-
 </script>

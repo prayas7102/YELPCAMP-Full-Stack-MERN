@@ -63,10 +63,8 @@ router.get('/:id/edit',islogin, catchAsync(async(req,res)=>{
 }));
 router.route('/:id')
 	.get( catchAsync(async(req,res)=>{
-	//console.log(req.params.id);
 	const campgrounds = await campground.findById(req.params.id).populate({path:'reviews',populate:{path:'person'}}).populate('author')
 	.then((campgrounds)=>{
-	    // console.log(campgrounds.geometery.coordinates);
 		req.flash('success','Successfuly found Campground');
 		res.render('campgrounds/show',{campgrounds});
 	})
@@ -79,7 +77,6 @@ router.route('/:id')
 }))
 	.put(upload.array('image'),validatecamp, catchAsync(async(req,res)=>{
 	const {id}=req.params;
-	// console.log(req.body);
 	const campgrounds=await campground.findByIdAndUpdate(id,{...req.body.campgrounds})
 	.then(async(campgrounds)=>{
 		req.files.map(f=>(campgrounds.image.push({url:f.path,filename:f.filename})));
@@ -89,7 +86,6 @@ router.route('/:id')
 				 await cloudinary.uploader.destroy(filename);
 			}
 		   await campgrounds.updateOne({$pull:{image:{filename:{$in: req.body.delete}}}});
-		//    console.log(campgrounds,req.body.delete);
 		} 
 		await campgrounds.save();
 		req.flash('success','Successfuly EDITED the Campground');

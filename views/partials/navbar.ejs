@@ -9,6 +9,8 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css" rel="stylesheet">
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <style>
+#map { position: top;height:400px;width:100%;margin-bottom: 30px; }
+
 .checked {
   color: orange;
 }
@@ -81,7 +83,9 @@
 	color: #2ddc76;
 }
 
-</style></head>
+</style>
+</head>
+
 <body >
 <div class="container" class="d-flex flex-column vh-100">
 
@@ -102,8 +106,9 @@
           <%}else{%>
           <a class="nav-link" href="/login">Login</a>
           <%}%>
-          <a class="nav-link" href="/register">Register</a>
+          
         </form>
+        <a class="nav-link" href="/register">Register</a>
       </div>
     </div>
     

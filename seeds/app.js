@@ -22,7 +22,7 @@ const seed= async()=>{
 	await campground.deleteMany({});
 	/*const l= new campground({title:'purple field'});
 	await l.save();*/
-	for(let i=0;i<50;i++)
+	for(let i=0;i<cities.cities.length;i++)
 	{
 		const r=Math.floor(Math.random()*1000);
 		const camp = new campground({
@@ -34,6 +34,10 @@ const seed= async()=>{
 				{url:'https://res.cloudinary.com/dspuaavtt/image/upload/v1637733542/yljxe2rkfsp29tuyo5kl.jpg',filename:'yljxe2rkfsp29tuyo5kl'},
 				{url:'https://res.cloudinary.com/dspuaavtt/image/upload/v1637733541/reappghs6lilegraoyn4.jpg',filename:'reappghs6lilegraoyn4'}
 			],
+			geometery:{
+				type:"Point",
+				coordinates:[cities.cities[r].longitude,cities.cities[r].latitude]
+			},
 			description: 'lora',
 			price:100
 		})
