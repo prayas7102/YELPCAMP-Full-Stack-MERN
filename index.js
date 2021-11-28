@@ -29,8 +29,12 @@ const { serializeUser } = require('passport');
 app.use(methodOverride('_method'));
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
-app.get('/',(req,res)=>{
-	res.render('home.ejs')
+app.use((req,res,next)=>{
+	res.locals.currentuser=req.user;
+	next();
+});
+app.get('/home',(req,res)=>{
+	return res.render('home');
 });
 
 const sessionconfig={

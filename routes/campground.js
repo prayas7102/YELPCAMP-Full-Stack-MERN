@@ -112,10 +112,11 @@ router.route('/:id')
 }))
 router.post('/:id/review',catchAsync(async(req,res)=>{
 	const camp = await campground.findById(req.params.id).populate({path:'reviews',populate:{path:'person'}}).populate('author');
-	console.log(camp)
+	
 	const review = new Review(req.body.review);
 	review.person=req.user._id;
 	camp.reviews.push(review);
+	console.log(camp);
 	await review.save();
 	await camp.save().then((campgrounds)=>{
 		req.flash('success','Successfuly ADDED the Review');

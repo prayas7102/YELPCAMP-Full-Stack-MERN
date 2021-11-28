@@ -57,24 +57,25 @@
 
 	  <div class="card">
 		<div class="card-body">
+
 			<form method="POST" action="/campgrounds/<%=campgrounds._id%>/review" class="validated-form" novalidate>
-				<div><label for="rating" class="form-label">LEAVE A REVIEW</label></div>
+				<div>LEAVE A REVIEW</div>
+				<label for="rating" class="form-label"></label>
 						<fieldset class="rating">
-							<input type="radio" id="star5" name="review[star]" value="5" required/><label for="star5" class="full" title="Awesome"></label>
-							<input type="radio" id="star4" name="review[star]" value="4" required/><label for="star4" class="full"></label>
-							<input type="radio" id="star3" name="review[star]" value="3" required/><label for="star3" class="full"></label>
-							<input type="radio" id="star2" name="review[star]" value="2" required/><label for="star2" class="full"></label>
-							<input type="radio" id="star1" name="review[star]" value="1" required/><label for="star1" class="full"></label>
-						</fieldset>
-				
-				<!-- <input type="range" min="1" max="5" name="review[star]" class="form-range" id="customRange1" required> -->
+							<input type="radio" id="star5" name="review[star]" value="5" /><label for="star5" class="full"></label>
+							<input type="radio" id="star4" name="review[star]" value="4" /><label for="star4" class="full"></label>
+							<input type="radio" id="star3" name="review[star]" value="3" /><label for="star3" class="full"></label>
+							<input type="radio" id="star2" name="review[star]" value="2" /><label for="star2" class="full"></label>
+							<input type="radio" id="star1" name="review[star]" value="1" /><label for="star1" class="full"></label>
+						</fieldset>	
+				<!-- <input type="range" min="1" max="5" name="review[star]" class="form-range" id="customRange1" > -->
 				<div class="form-floating">
 					<textarea class="form-control" id="floatingTextarea" placeholder="Leave a comment here" name="review[body]" style="height: 100px;width: 100%;" required></textarea>
 					<div style="margin: 1em;"><button class="btn btn-success">SUBMIT</button>
 					</div>
-				  </div>
-				  
+				  </div>		  
 			  </form>
+
 			  <% for(r of campgrounds.reviews){ %>
 				<div class="card" style="width: 30rem;">
 				<div class="card-body">
