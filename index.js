@@ -10,6 +10,7 @@ const AppError=require('./util/AppError');
 const mongoose=require('mongoose');
 const session= require('express-session');
 const flash=require('connect-flash');
+const mongoSanitize = require('express-mongo-sanitize');
 const passport=require('passport');
 const localstrat=require('passport-local');
 const user=require('./models/user');
@@ -17,12 +18,16 @@ const campground=require('./models/campground');
 const camproute=require('./routes/campground');
 const revroute=require('./routes/review');
 const userRoute=require('./routes/user');
-mongoose.connect('mongodb://localhost:27017/yelp-camp',{
+const helmet=require('helmet');
+const MongoStore=require('connect-mongo');
+const url=process.env.DB_URL;
+mongoose.connect(url || 'mongodb://localhost:27017/yelp-camp',{
 	useNewUrlParser: true,
 	useCreateIndex: true,
 	useUnifiedTopology: true
 });
-app.engine('ejs',ejsmate)
+app.engine('ejs',ejsmate);
+app.use(mongoSanitize());
 app.use(express.urlencoded({extended: true}));
 const methodOverride=require('method-override');
 const { serializeUser } = require('passport');
@@ -36,13 +41,20 @@ app.use((req,res,next)=>{
 app.get('/home',(req,res)=>{
 	return res.render('home');
 });
-
+app.use(helmet({contentSecurityPolicy:false}));
 const sessionconfig={
+	store: MongoStore.create({
+		mongoUrl: url || 'mongodb://localhost:27017/yelp-camp',
+		ttl: 14 * 24 * 60 * 60 ,// = 14 days. Default
+		useUnifiedTopology: true
+	  }),
+	name:'session',
 	secret: 'bibichod',
 	resave: false,
 	saveUninitialized: true,
 	cookie:{
 		httpOnly: true,
+		//secure:true,
 		expire: 1000000000000000000000000000000000999999999999999999999999999999999,
 		maxAge: 1000000000000999999999999999999999999999999999999999999999999999999
 	}
