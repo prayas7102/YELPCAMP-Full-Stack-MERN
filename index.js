@@ -19,9 +19,10 @@ const camproute=require('./routes/campground');
 const revroute=require('./routes/review');
 const userRoute=require('./routes/user');
 const helmet=require('helmet');
-const MongoStore=require('connect-mongo');
+const MongoDBStore=require('connect-mongo');
 const url=process.env.DB_URL;
-mongoose.connect(url || 'mongodb://localhost:27017/yelp-camp',{
+// console.log(url);
+mongoose.connect( url|| 'mongodb://localhost:27017/yelp-camp',{
 	useNewUrlParser: true,
 	useCreateIndex: true,
 	useUnifiedTopology: true
@@ -38,29 +39,32 @@ app.use((req,res,next)=>{
 	res.locals.currentuser=req.user;
 	next();
 });
-app.get('/home',(req,res)=>{
-	return res.render('home');
-});
-app.use(helmet({contentSecurityPolicy:false}));
+// const store = MongoDBStore.create({
+// 	url: process.env.DB_URL , secret:"fckyou",touchAfter: 24*60*60
+// })
+
 const sessionconfig={
-	store: MongoStore.create({
-		mongoUrl: url || 'mongodb://localhost:27017/yelp-camp',
-		ttl: 14 * 24 * 60 * 60 ,// = 14 days. Default
-		useUnifiedTopology: true
+	store: MongoDBStore.create({
+		mongoUrl: url ,
+		secret:"fckyou",
+		ttl: 14 * 24 * 60 * 60 ,
+		touchAfter: 24*60*60, 
 	  }),
+	// MongoDBStore.set('useUnifiedTopology','true'),
 	name:'session',
 	secret: 'bibichod',
 	resave: false,
-	saveUninitialized: true,
+	saveUninitialized: false,
 	cookie:{
 		httpOnly: true,
 		//secure:true,
-		expire: 1000000000000000000000000000000000999999999999999999999999999999999,
-		maxAge: 1000000000000999999999999999999999999999999999999999999999999999999
+		expire: 100*1000*60,
+		maxAge: 100*1000*60
 	}
 };
 app.use(session(sessionconfig));
 app.use(flash());
+app.use(helmet({contentSecurityPolicy:false}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -76,6 +80,11 @@ app.use((req,res,next)=>{
 	next();
 });
 
+
+
+app.get('/home',(req,res)=>{
+	return res.render('home');
+});
 app.use('/campgrounds',camproute);
 app.use('/review',revroute);
 app.use('/',userRoute);
@@ -93,6 +102,6 @@ app.use((err,req,res,next)=>{
 	res.status(statuscode).render('error',{err});
 	next();
 });
-app.listen(process.env.PORT || 3000,()=>{
+app.listen(3000,()=>{
 	console.log('serving on port 3000')
 })
