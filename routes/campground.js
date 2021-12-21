@@ -39,7 +39,7 @@ router.route('/')
 		req.error('error','Successfuly DID NOT made a new Campground');0
 	}else{
 		req.flash('success','Successfuly made a new Campground');
-		campgrounds.geometery=geodata.body.features[0].geometry;
+		campgrounds.geometry=geodata.body.features[0].geometry;
 		campgrounds.author=req.user._id;
 		await campgrounds.save();
 	}	

@@ -4,10 +4,12 @@ const User=require('./user');
 const Schema=mongoose.Schema;
 const CampgroundSchema = new Schema({
 	title:String,
+	// type: String, 
+	// properties: { id: String, mag: Number, time: Number, felt: Number, tsunami: Number },
 	image:[{
 		url:String,filename:String
 	}],
-	geometery:{
+	geometry:{
 		type:{
 			type:String,
 			enum:['Point'],

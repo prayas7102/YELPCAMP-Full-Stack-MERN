@@ -128,7 +128,7 @@
 </script>
 <script>
 	mapboxgl.accessToken = 'pk.eyJ1IjoicHJheWFza3VtYXIiLCJhIjoiY2t3ZzBoY2w0MGswMTJwcG1paWFqdWRzcSJ9.__eZ6h0eFMNHrqIPy44GZQ';
-	var c= '[<%=(campgrounds.geometery.coordinates)%>]';
+	var c= '[<%=(campgrounds.geometry.coordinates)%>]';
 	console.log(typeof(c));
 	const map = new mapboxgl.Map({
 		container: 'map', // container ID

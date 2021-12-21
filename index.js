@@ -22,7 +22,7 @@ const helmet=require('helmet');
 const MongoDBStore=require('connect-mongo');
 const url=process.env.DB_URL;
 // console.log(url);
-mongoose.connect( url|| 'mongodb://localhost:27017/yelp-camp',{
+mongoose.connect('mongodb://localhost:27017/yelp-camp',{
 	useNewUrlParser: true,
 	useCreateIndex: true,
 	useUnifiedTopology: true
@@ -44,15 +44,15 @@ app.use((req,res,next)=>{
 // })
 
 const sessionconfig={
-	store: MongoDBStore.create({
-		mongoUrl: url ,
-		secret:"fckyou",
-		ttl: 14 * 24 * 60 * 60 ,
-		touchAfter: 24*60*60, 
-	  }),
+	// store: MongoDBStore.create({
+	// 	mongoUrl: url ,
+	// 	secret:"grfrbdh234",
+	// 	ttl: 14 * 24 * 60 * 60 ,
+	// 	touchAfter: 24*60*60, 
+	//   }),
 	// MongoDBStore.set('useUnifiedTopology','true'),
 	name:'session',
-	secret: 'bibichod',
+	secret: '435746eGHVHGF892',
 	resave: false,
 	saveUninitialized: false,
 	cookie:{
@@ -79,9 +79,6 @@ app.use((req,res,next)=>{
     res.locals.error=req.flash('error');
 	next();
 });
-
-
-
 app.get('/home',(req,res)=>{
 	return res.render('home');
 });
