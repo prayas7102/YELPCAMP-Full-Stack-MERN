@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express');const app=express();
 const catchAsync=require('../util/catchAsync');
 const AppError=require('../util/AppError');
 const campground=require('../models/campground');
@@ -12,6 +12,15 @@ const upload=multer({storage});
 const geocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapboxtoken=process.env.MAPBOX_TOKEN;
 const geocoder=geocoding({accessToken:mapboxtoken});
+const flash=require('connect-flash');
+app.use(flash());
+app.use((req,res,next)=>{
+	res.locals.currentuser=req.user;
+	res.locals.success=req.flash('success');
+    res.locals.error=req.flash('error');
+	next();
+});
+
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
 	//console.log(req.body,error)
@@ -21,14 +30,39 @@ const validatecamp =(req,res,next)=>{
 		next();
 	}
 }
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
 router.route('/')
 .get(catchAsync(async(req,res)=>{
 	const campgrounds= await campground.find({});
-	// console.log(campgrounds);
-	res.render('campgrounds/app',{campgrounds});
-} ))
+	// const x1= await campground.find({location:'Chicago Illinois'});
+	//  console.log(campgrounds)
+	if(req.query.search){
+		const regex=new RegExp(escapeRegex(req.query.search),'gi');
+		await campground.find({ location: regex }, function(err, allcampgrounds) {
+			if(err) {
+				console.log(err);
+			} else {
+				if(allcampgrounds.length){
+				let campgrounds=allcampgrounds;
+				req.flash('success','Results for '+req.query.search+ 'are found!!');
+				res.render('campgrounds/app',{campgrounds});}
+				else{
+					req.flash("error","Results for "+req.query.search+" are NOT found!!");
+					res.render('campgrounds/app',{campgrounds});
+				}
+			}
+		});
+	}else{
+		if(req.query.search){
+			req.flash('success','Results for '+req.query.search+ 'are found!!');	
+		}
+		res.render('campgrounds/app',{campgrounds});
+	}
+}))
 .post(upload.array('image'),validatecamp,catchAsync(async(req,res)=>{
-	console.log(req.body.campground.location);
+	// console.log(req.body.campground.location);
 	const geodata= await geocoder.forwardGeocode({
 		query:req.body.campground.location,limit:10
 	}).send();
@@ -65,11 +99,15 @@ router.route('/:id')
 	.get( catchAsync(async(req,res)=>{
 	const campgrounds = await campground.findById(req.params.id).populate({path:'reviews',populate:{path:'person'}}).populate('author')
 	.then((campgrounds)=>{
-		req.flash('success','Successfuly found Campground');
+		if(req.user){
+		req.flash('success','Successfuly found Campground');}
+		else{
+			req.flash('success','LOGIN to see location of <%=campgrounds.location%> on map and Ratings given by people');
+		}
 		res.render('campgrounds/show',{campgrounds});
 	})
 	.catch((a)=>{
-		console.log(a);
+		//console.log(a);
 		req.flash('error','DID NOT found Campground');
 		res.redirect('/campgrounds');
 	})

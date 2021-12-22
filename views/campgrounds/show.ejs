@@ -101,7 +101,16 @@
 		</div>
 	  </div>
 	</div>
-	<%}%>
+	<%}else{%>
+		<div class="col-sm-6">
+			<div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+				<div class="card-header">Remainder</div>
+				<div class="card-body">
+				  <h5 class="card-title">Please Login</h5>
+				  <p class="card-text">LOGIN to see location of <%=campgrounds.location%> on map and Ratings given by people.</p>
+				</div>
+			  </div></div>
+			<%}%>
 </div>
 <%- include('../partials/footer')%>
 <script>

@@ -1,42 +1,80 @@
-<%- include('../partials/navbar')%>
-<%- include('../partials/flash') %>
-<div class="container"><div id="map" ></div>
-<h1 style="text-align: center;margin-bottom: 30px;">All Campgrounds</h1>
+<div id="map"></div>
+<script>
+	// TO MAKE THE MAP APPEAR YOU MUST
+	// ADD YOUR ACCESS TOKEN FROM
+	// https://account.mapbox.com
+    mapboxgl.accessToken = 'pk.eyJ1IjoicHJheWFza3VtYXIiLCJhIjoiY2t3ZzBoY2w0MGswMTJwcG1paWFqdWRzcSJ9.__eZ6h0eFMNHrqIPy44GZQ';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [-79.4512, 43.6568],
+        zoom: 8
+    });
 
-<form action="/campgrounds" method="GET" class="validated-form" >
-	<div class="input-group mb-3">
-		<input class="form-control" type="text" id="search" placeholder="Search Campgrounds" name="[search]" >
-		<button type="submit" class="btn btn-primary">Submit</button>
-	</div>
-</form>
+    /* Given a query in the form "lng, lat" or "lat, lng"
+     * returns the matching geographic coordinate(s)
+     * as search results in carmen geojson format,
+     * https://github.com/mapbox/carmen/blob/master/carmen-geojson.md */
+    const coordinatesGeocoder = function (query) {
+        // Match anything which looks like
+        // decimal degrees coordinate pair.
+        const matches = query.match(
+            /^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
+        );
+        if (!matches) {
+            return null;
+        }
 
-<ul>
-	<%for(var c of campgrounds){%>
-		<div class="card mb-3" >
-		<div class="row">
-			<div class="col-md-4">
-                <% if (c.image.length) { %>
-				<img class="img-fluid" src="<%=c.image[0].url%>">
-                <% }else{ %>
-                <img class="img-fluid" src="">
-                <% } %>
-			</div>
-		<div class="col-md-8">
-		<div class="card-body">
-			<h5 class="card-title"><%= c.title%></h5>
-			<p class="card-text"><%=c.description%></p>
-			<p class="card-text">
-				<small class="text-muted"><%=c.location%></small>
-			</p>
-			<a class="btn btn-primary" href="/campgrounds/<%=c._id%>">VIEW  <%=c.title%></a>
-		</div>
-		</div>
-		</div>
-		</div>
-		<%}%>
-</ul></div>
-<%- include('../partials/footer')%>
-<!-- -->
+        function coordinateFeature(lng, lat) {
+            return {
+                center: [lng, lat],
+                geometry: {
+                    type: 'Point',
+                    coordinates: [lng, lat]
+                },
+                place_name: 'Lat: ' + lat + ' Lng: ' + lng,
+                place_type: ['coordinate'],
+                properties: {},
+                type: 'Feature'
+            };
+        }
+
+        const coord1 = Number(matches[1]);
+        const coord2 = Number(matches[2]);
+        const geocodes = [];
+
+        if (coord1 < -90 || coord1 > 90) {
+            // must be lng, lat
+            geocodes.push(coordinateFeature(coord1, coord2));
+        }
+
+        if (coord2 < -90 || coord2 > 90) {
+            // must be lat, lng
+            geocodes.push(coordinateFeature(coord2, coord1));
+        }
+
+        if (geocodes.length === 0) {
+            // else could be either lng, lat or lat, lng
+            geocodes.push(coordinateFeature(coord1, coord2));
+            geocodes.push(coordinateFeature(coord2, coord1));
+        }
+
+        return geocodes;
+    };
+
+    // Add the control to the map.
+    map.addControl(
+        new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            localGeocoder: coordinatesGeocoder,
+            zoom: 4,
+            placeholder: 'Try: -40, 170',
+            mapboxgl: mapboxgl,
+            reverseGeocode: true
+        })
+    );
+</script>
+
 <script>
 	// Example starter JavaScript for disabling form submissions if there are invalid fields
 (function () {
@@ -59,9 +97,9 @@
     })
 })()
 
-let campgrounds= '{"type": "FeatureCollection","crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },"features": <%- JSON.stringify(campgrounds) %>}';
-console.log(campgrounds);
-mapboxgl.accessToken = 'pk.eyJ1IjoicHJheWFza3VtYXIiLCJhIjoiY2t3ZzBoY2w0MGswMTJwcG1paWFqdWRzcSJ9.__eZ6h0eFMNHrqIPy44GZQ';
+       let campgrounds= '{"type": "FeatureCollection","crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },"features": <%- JSON.stringify(campgrounds) %>}';
+      console.log(campgrounds);
+	mapboxgl.accessToken = 'pk.eyJ1IjoicHJheWFza3VtYXIiLCJhIjoiY2t3ZzBoY2w0MGswMTJwcG1paWFqdWRzcSJ9.__eZ6h0eFMNHrqIPy44GZQ';
 const map = new mapboxgl.Map({
 container: 'map',
 style: 'mapbox://styles/mapbox/dark-v10',
