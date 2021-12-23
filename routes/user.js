@@ -10,7 +10,7 @@ const passlocalmong=require('passport-local-mongoose');
 const nodemailer=require('nodemailer');
 const crypto= require('crypto');
 const passport=require('passport');
-// const async=require('async');
+ const async=require('async');
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
 	//console.log(req.body,error)
@@ -27,8 +27,8 @@ router.route('/register')
 	.post(catchAsync(async(req,res,next)=>{
 	try{
 		const {username,password,email}=req.body.register;
-		const User=new User({email,username});
-		const registeruser=await User.register(User,password);
+		const user=new User({email,username});
+		const registeruser=await User.register(user,password);
 		req.login(registeruser,function(error){
 			if(error){return next(error)}
 			req.flash('success','Welcome to Yelp-Camp');
