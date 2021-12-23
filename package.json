@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
   "dependencies": {
     "async": "^3.2.2",
     "bootstrap": "^5.0.0",
@@ -34,10 +38,6 @@
     "starability": "^2.4.0"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "index.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/prayas7102/YELPCAMP---CURD-Application.git"
