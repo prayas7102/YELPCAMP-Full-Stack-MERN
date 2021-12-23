@@ -10,7 +10,7 @@ const passlocalmong=require('passport-local-mongoose');
 const nodemailer=require('nodemailer');
 const crypto= require('crypto');
 const passport=require('passport');
- const async=require('async');
+// const async=require('async');
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
 	//console.log(req.body,error)
@@ -102,17 +102,14 @@ router.route('/forgotpassword')
 				  'If you did not request this, please ignore this email and your password will remain unchanged.\n'
 			  };
 			  smtpTransport.sendMail(mailOptions, function(err) {
-				
 				req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-				res.redirect('/campgrounds');
 				done(err, 'done');
 			  });
 			}
 		  ], function(err) {
 			if (err)
-			{console.log("error"); return next(err);}
-			req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-			res.redirect('/login');
+			{ return next(err);}
+			res.redirect('/campgrounds');
 	  });
 });
 router.get('/reset/:token', function(req, res) {
