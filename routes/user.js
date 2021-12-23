@@ -10,7 +10,7 @@ const passlocalmong=require('passport-local-mongoose');
 const nodemailer=require('nodemailer');
 const crypto= require('crypto');
 const passport=require('passport');
-const async=require('async');
+// const async=require('async');
 const validatecamp =(req,res,next)=>{
 	const {error}=joischema.validate(req.body);
 	//console.log(req.body,error)
