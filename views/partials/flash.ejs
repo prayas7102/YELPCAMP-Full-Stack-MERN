@@ -1,11 +1,7 @@
-<div style="margin:10px">
-<% if (success && success.length){ %>
-    <div class="alert alert-success" role="alert">
-        <%= success %>
-      </div>
-    <%}if (error && error.length){%>
-        <div class="alert alert-danger" role="alert">
-            <%=error%>!!
-          </div>
-    <%}%>
+<div style="margin: 10px">
+  <% if (success && success.length){ %>
+  <div class="alert alert-success" role="alert"><%= success %></div>
+  <%}if (error && error.length){%>
+  <div class="alert alert-danger" role="alert"><%=error%>!!</div>
+  <%}%>
 </div>
